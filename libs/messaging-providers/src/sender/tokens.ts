@@ -1,0 +1,2 @@
+export const EMAIL_STRATEGY = 'EMAIL_STRATEGY';
+export const SMS_STRATEGY = 'SMS_STRATEGY';
