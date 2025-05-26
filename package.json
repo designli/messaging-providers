@@ -2,9 +2,12 @@
   "name": "@designli/messaging-providers",
   "version": "0.0.1",
   "description": "A messaging provider package for sending and receiving messages via various channels like email and SMS",
-  "author": "",
-  "license": "UNLICENSED",
+  "repository": "https://github.com/designli/messaging-providers.git",
+  "license": "ISC",
   "main": "dist/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "nest build messaging-providers",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
