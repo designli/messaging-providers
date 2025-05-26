@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
+  "projects": {
+    "messaging-providers": {
+      "type": "library",
+      "root": "libs/messaging-providers",
+      "entryFile": "index",
+      "sourceRoot": "libs/messaging-providers/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/messaging-providers/tsconfig.lib.json"
+      }
+    }
+  }
+}

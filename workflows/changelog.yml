@@ -1,0 +1,28 @@
+name: Changelog
+
+on:
+  push:
+    tags:
+        - 'v[0-9]+.[0-9]+.[0-9]+-[a-zA-Z]*'
+        - 'v[0-9]+.[0-9]+.[0-9]'
+  workflow_dispatch:
+
+jobs:
+  chagelog:
+    runs-on: ubuntu-latest
+    env:
+      IS_PRE_RELEASE: ${{ contains(github.ref_name, '-') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        uses: hideoo/changelogithub-action@v1
+        env:
+          PRERELEASE: ${{ env.IS_PRE_RELEASE }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ env.PRERELEASE }}

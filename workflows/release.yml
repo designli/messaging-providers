@@ -1,0 +1,105 @@
+name: Release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: 'Release type (one of): patch, minor, major, prepatch, preminor, premajor, prerelease'
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org/
+          node-version: '18'
+
+      - name: Install dependencies
+        run: yarn install
+
+      # Tests
+      #- name: Run tests
+      #  run: yarn test
+  create-tag:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.final-version.outputs.RELEASE_TAG }}
+      new_version: ${{ steps.final-version.outputs.NEW_VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org/
+          node-version: '18'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Create .npmrc file
+        run: |
+          echo "@designli:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_REGISTRY_PAT }}" >> .npmrc
+
+      - name: Git configuration
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Bump release version
+        id: set-version
+        if: startsWith(github.event.inputs.release-type, 'pre') != true
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
+      - name: Bump pre-release version
+        id: set-version-pre
+        if: startsWith(github.event.inputs.release-type, 'pre')
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
+      - name: Set final version outputs
+        id: final-version
+        run: |
+          echo "RELEASE_TAG=${{ env.RELEASE_TAG }}" >> $GITHUB_OUTPUT
+          echo "NEW_VERSION=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
+        env:
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          NEW_VERSION: ${{ env.NEW_VERSION }}
+
+      - name: Commit package.json changes and create tag
+        run: |
+          git add "package.json"
+          git commit -m "chore: release ${{ env.NEW_VERSION }}"
+          git tag ${{ env.NEW_VERSION }}
+
+      - name: Push changes to repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ env.NEW_VERSION }}
+        run: |
+          git push origin
+          git push --tags
+          gh workflow run changelog.yml --ref $NEW_VERSION
+
+      - name: build release
+        run: yarn build
+
+      - name: Publish
+        run: npm publish --verbose --tag ${{ env.RELEASE_TAG }}
+
+
