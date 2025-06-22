@@ -1,6 +1,6 @@
 {
   "name": "@designli/messaging-providers",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A messaging provider package for sending and receiving messages via various channels like email and SMS",
   "repository": "https://github.com/designli/messaging-providers.git",
   "license": "ISC",
