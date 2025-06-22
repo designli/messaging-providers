@@ -5,6 +5,7 @@
   "repository": "https://github.com/designli/messaging-providers.git",
   "license": "ISC",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
