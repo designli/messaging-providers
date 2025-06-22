@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DefaultMailDto } from '../../dto/default-mail.dto';
-import { BaseWebhookStrategy } from './base-webhook.strategy';
+import { BaseWebhookHandler } from './base-webhook.handler';
 
 @Injectable()
-export abstract class BaseMailWebhookStrategy<
+export abstract class BaseMailWebhookHandler<
   TBody extends DefaultMailDto = DefaultMailDto,
-> extends BaseWebhookStrategy<TBody> {}
+> extends BaseWebhookHandler<TBody> {}

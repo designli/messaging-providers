@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { BaseWebhookStrategy } from '../strategies/base/base-webhook.strategy';
+import { BaseWebhookHandler } from '../handlers/base/base-webhook.handler';
 
 @Injectable()
 export class MessageRouterService {
-  private readonly routes = new Map<string, BaseWebhookStrategy<any>>();
+  private readonly routes = new Map<string, BaseWebhookHandler<any>>();
 
-  registerRoute(path: string, strategy: BaseWebhookStrategy<any>) {
-    this.routes.set(path, strategy);
+  registerRoute(path: string, Handler: BaseWebhookHandler<any>) {
+    this.routes.set(path, Handler);
   }
 
-  getStrategyForPath(path: string): BaseWebhookStrategy<any> | undefined {
+  getHandlerForPath(path: string): BaseWebhookHandler<any> | undefined {
     return this.routes.get(path);
   }
 }

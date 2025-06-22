@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DefaultSmsDto } from '../../dto/default-sms.dto';
-import { BaseWebhookStrategy } from './base-webhook.strategy';
+import { BaseWebhookHandler } from './base-webhook.handler';
 
 @Injectable()
-export abstract class BaseSMSWebhookStrategy<
+export abstract class BaseSMSWebhookHandler<
   TBody extends DefaultSmsDto = DefaultSmsDto,
-> extends BaseWebhookStrategy<TBody> {
+> extends BaseWebhookHandler<TBody> {
   abstract handleMessage(body: TBody): Promise<void>;
 }

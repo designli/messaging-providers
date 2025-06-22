@@ -36,24 +36,29 @@ export class MessagingProvidersReceiverModule implements NestModule {
     const controller = createMessageReceiverController(prefix);
 
     const providers: Provider[] = [MessageRouterService];
-    const strategyProviders: Provider[] = [];
+    const handlerProviders: Provider[] = [];
 
     for (const route of options.routes) {
-      providers.push(route.strategy);
+      providers.push(route.handler);
 
-      strategyProviders.push({
+      handlerProviders.push({
         provide: `REGISTER_ROUTE_${route.path}`,
         useFactory: (router: MessageRouterService, strategyInstance: any) => {
           router.registerRoute(route.path, strategyInstance);
         },
-        inject: [MessageRouterService, route.strategy],
+        inject: [MessageRouterService, route.handler],
       });
     }
 
     return {
       module: MessagingProvidersReceiverModule,
       controllers: [controller],
-      providers: [...providers, ...strategyProviders],
+      providers: [
+        ...providers,
+        ...handlerProviders,
+        ...(options.providers || []),
+      ],
+      imports: [...(options.imports || [])],
     };
   }
 

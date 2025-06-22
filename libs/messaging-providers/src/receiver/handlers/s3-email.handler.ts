@@ -1,23 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DefaultMailDto } from '../dto/default-mail.dto';
-import { BaseMailWebhookStrategy } from './base/base-mail-webhook.strategy';
+import { BaseMailWebhookHandler } from './base/base-mail-webhook.handler';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { simpleParser } from 'mailparser';
 import { ParsedEmail } from '../dto/parsed-email.dto';
 
 /**
- * Abstract strategy for handling email messages with attachments from S3.
- * This strategy extends the BaseMailWebhookStrategy and provides
+ * Abstract Handler for handling email messages with attachments from S3.
+ * This Handler extends the BaseMailWebhookHandler and provides
  * @requires AWS_S3_KEY environment variable for S3 access key
  * @requires AWS_S3_SECRET environment variable for S3 secret key
  */
 @Injectable()
-export abstract class S3EmailStrategy extends BaseMailWebhookStrategy<DefaultMailDto> {
+export abstract class S3EmailHandler extends BaseMailWebhookHandler<DefaultMailDto> {
   private readonly logger: Logger;
 
   constructor() {
     super();
-    this.logger = new Logger(S3EmailStrategy.name);
+    this.logger = new Logger(S3EmailHandler.name);
   }
 
   abstract handleParsedEmail(body: ParsedEmail): Promise<void>;

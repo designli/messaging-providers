@@ -2,11 +2,11 @@ import {
   BadRequestException,
   Injectable,
 } from '@nestjs/common';
-import { MessageReceiverStrategy } from '../../interfaces/message-receiver-strategy.interface';
+import { MessageReceiverHandler } from '../../interfaces/message-receiver-handler.interface';
 
 @Injectable()
-export abstract class BaseWebhookStrategy<TBody>
-  implements MessageReceiverStrategy<TBody>
+export abstract class BaseWebhookHandler<TBody>
+  implements MessageReceiverHandler<TBody>
 {
   abstract handleMessage(body: TBody): Promise<void>;
 

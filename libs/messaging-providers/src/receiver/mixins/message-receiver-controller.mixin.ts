@@ -6,7 +6,7 @@ import {
   Body,
   NotFoundException,
 } from '@nestjs/common';
-import { Request, Router } from 'express';
+import { Request } from 'express';
 import { MessageRouterService } from '../services/message-router.service';
 
 export function createMessageReceiverController(prefix: string): any {
@@ -17,14 +17,14 @@ export function createMessageReceiverController(prefix: string): any {
     @Post('*')
     async handle(@Req() req: Request) {
       const path = req.path.replace(`/${prefix}`, '');
-      const strategy = this.router.getStrategyForPath(path || '/');
+      const handler = this.router.getHandlerForPath(path || '/');
 
       const body = req.body;
 
-      if (!strategy)
-        throw new NotFoundException(`No strategy found for path ${path}`);
+      if (!handler)
+        throw new NotFoundException(`No handler found for path ${path}`);
 
-      await strategy.handle(req, body);
+      await handler.handle(req, body);
       return { status: 'ok' };
     }
   }
