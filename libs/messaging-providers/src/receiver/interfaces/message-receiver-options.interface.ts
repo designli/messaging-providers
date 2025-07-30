@@ -1,5 +1,5 @@
 import { DynamicModule, Provider, Type } from '@nestjs/common';
-import { BaseWebhookHandler } from '../handlers/base/base-webhook.handler';
+import { MessageReceiverHandler } from './message-receiver-handler.interface';
 
 export interface MessageReceiverOptions {
   prefix: string;
@@ -10,5 +10,5 @@ export interface MessageReceiverOptions {
 
 export interface WebhookRouteConfig {
   path: string;
-  handler: Type<BaseWebhookHandler<any>>;
+  handler: Type<MessageReceiverHandler<any>>;
 }

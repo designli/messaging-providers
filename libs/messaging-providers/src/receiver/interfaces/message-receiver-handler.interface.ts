@@ -1,4 +1,7 @@
-export interface MessageReceiverHandler<T> {
-  handleMessage(payload: T): Promise<void>;
-  handle(req: any, body: any): Promise<any>;
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export abstract class MessageReceiverHandler<T> {
+  abstract handleMessage(payload: T): Promise<void>;
+  abstract handle(req: any, body: any): Promise<any>;
 }
