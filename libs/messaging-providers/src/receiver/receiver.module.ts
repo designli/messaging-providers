@@ -9,6 +9,7 @@ import { MessageReceiverOptions } from './interfaces/message-receiver-options.in
 import { MessageRouterService } from './services/message-router.service';
 import { createMessageReceiverController } from './mixins/message-receiver-controller.mixin';
 import { SnsBodyParserMiddleware } from './middleware/sns-plain-text.middleware';
+import { TwilioBodyParserMiddleware } from './middleware/twilio-body-parser.middleware';
 
 /**
  * Module for registering message receiver strategies.
@@ -63,6 +64,8 @@ export class MessagingProvidersReceiverModule implements NestModule {
   }
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SnsBodyParserMiddleware).forRoutes('*');
+    consumer
+      .apply(SnsBodyParserMiddleware, TwilioBodyParserMiddleware)
+      .forRoutes('*');
   }
 }

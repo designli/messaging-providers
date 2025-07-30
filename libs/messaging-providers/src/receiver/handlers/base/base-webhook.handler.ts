@@ -6,7 +6,7 @@ import { MessageReceiverHandler } from '../../interfaces/message-receiver-handle
 
 @Injectable()
 export abstract class BaseWebhookHandler<TBody>
-  implements MessageReceiverHandler<TBody>
+  extends MessageReceiverHandler<TBody>
 {
   abstract handleMessage(body: TBody): Promise<void>;
 
