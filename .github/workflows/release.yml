@@ -46,9 +46,8 @@ jobs:
 
       - name: Create .npmrc file
         run: |
-          mkdir -p ~/.npm
-          echo "@designli:registry=https://npm.pkg.github.com" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_REGISTRY_PAT }}" >> ~/.npmrc
+          echo "@designli:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_REGISTRY_PAT }}" >> .npmrc
 
       - name: Git configuration
         run: |
