@@ -34,7 +34,10 @@ export class MessagingProvidersReceiverModule implements NestModule {
   static register(options: MessageReceiverOptions): DynamicModule {
     const prefix = options.prefix;
 
-    const controller = createMessageReceiverController(prefix);
+    const controller = createMessageReceiverController(
+      prefix,
+      options.publicMetadata,
+    );
 
     const providers: Provider[] = [MessageRouterService];
     const handlerProviders: Provider[] = [];
