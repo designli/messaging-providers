@@ -17,13 +17,18 @@ export class TwilioSmsAdapter
     this.client = new Twilio(config.accountSid, config.authToken);
   }
 
-  async send(message: SendSMSWithFromNumber): Promise<void> {
+  async send(message: SendSMSWithFromNumber): Promise<string> {
     validateInput(message, SendSMSWithFromNumber);
 
-    await this.client.messages.create({
+    const response = await this.client.messages.create({
       body: message.message,
       from: message.from,
       to: message.recipient,
     });
+
+    if (!response.sid)
+      throw new Error('Failed to send SMS message via Twilio.');
+
+    return response.sid;
   }
 }

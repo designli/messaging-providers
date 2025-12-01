@@ -39,11 +39,16 @@ export class SnsSmsAdapter implements MessagingAdapter<SendSMSMessageDto> {
    * Sends an SMS message using AWS SNS.
    * @param message The message object containing the recipient, message, and type.
    */
-  async send(message: SendSMSMessageDto): Promise<void> {
+  async send(message: SendSMSMessageDto): Promise<string> {
     validateInput(message, SendSMSMessageDto);
 
     const input = this._getPublishInput(message);
     const command = new PublishCommand(input);
-    await this.client.send(command);
+    const response = await this.client.send(command);
+
+    if (!response.MessageId)
+      throw new Error('Failed to send SMS message via SNS.');
+
+    return response.MessageId;
   }
 }

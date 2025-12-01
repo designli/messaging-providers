@@ -38,4 +38,21 @@ export class SesEmailAdapter extends NodemailerAdapter<SendEmailMessageDto> {
 
     return options;
   }
+
+  extractSesMessageId(response: string): string | null {
+    const parts = response.trim().split(' ');
+    const candidate = parts[parts.length - 1];
+    return candidate.length > 20 ? candidate : null;
+  }
+
+  async send(message: SendEmailMessageDto): Promise<string> {
+    const reponse = await super.send(message);
+
+    const messageId = this.extractSesMessageId(reponse);
+
+    if (!messageId)
+      throw new Error('Failed to extract SES Message ID from response.');
+
+    return messageId;
+  }
 }
