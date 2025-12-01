@@ -9,7 +9,7 @@ export abstract class AbstractMessagingStrategy<T> {
     this.logger.log('Messaging strategy initialized.');
   }
 
-  async sendMessage(message: T): Promise<void> {
+  async sendMessage(message: T): Promise<string> {
     const messageString = JSON.stringify(message, null, 2);
     const truncatedMessage =
       messageString.length > 500
@@ -26,12 +26,14 @@ export abstract class AbstractMessagingStrategy<T> {
         fullLength: messageString.length,
       });
 
-      await this.adapter.send(message);
+      const id = await this.adapter.send(message);
 
       this.logger.log({
         event: 'send_message_success',
         messageType,
       });
+
+      return id;
     } catch (error) {
       this.logger.error(
         {

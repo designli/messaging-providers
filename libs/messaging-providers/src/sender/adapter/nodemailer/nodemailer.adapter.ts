@@ -11,7 +11,13 @@ export abstract class NodemailerAdapter<T> implements MessagingAdapter<T> {
 
   abstract getMailOptions(message: T): SMTPTransport.Options;
 
-  async send(message: T): Promise<void> {
-    await this.transporter.sendMail(this.getMailOptions(message));
+  async send(message: T): Promise<string> {
+    const response = await this.transporter.sendMail(
+      this.getMailOptions(message),
+    );
+
+    if (!response) throw new Error('Failed to send email via Nodemailer.');
+
+    return response.info;
   }
 }
