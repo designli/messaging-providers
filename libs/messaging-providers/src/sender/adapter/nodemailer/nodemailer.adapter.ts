@@ -18,6 +18,6 @@ export abstract class NodemailerAdapter<T> implements MessagingAdapter<T> {
 
     if (!response) throw new Error('Failed to send email via Nodemailer.');
 
-    return response.info;
+    return response.response;
   }
 }
