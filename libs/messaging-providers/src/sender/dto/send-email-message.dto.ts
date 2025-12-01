@@ -4,6 +4,7 @@ import {
   IsArray,
   IsOptional,
   IsEnum,
+  ValidateNested,
 } from 'class-validator';
 import { Attachment } from 'nodemailer/lib/mailer';
 
@@ -73,4 +74,17 @@ export class SendEmailMessageDto {
     message: 'Type must be either "html" or "text".',
   })
   type: 'html' | 'text';
+
+  @IsOptional()
+  @IsArray({ message: 'Headers must be an array.' })
+  @ValidateNested({ each: true })
+  headers?: SendEmailHeadersDto[];
+}
+
+export class SendEmailHeadersDto {
+  @IsString({ message: 'Header key must be a string.' })
+  key: string;
+
+  @IsString({ message: 'Header value must be a string.' })
+  value: string;
 }

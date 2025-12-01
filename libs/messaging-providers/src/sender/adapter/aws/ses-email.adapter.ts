@@ -3,12 +3,13 @@ import { NodemailerAdapter } from '../nodemailer/nodemailer.adapter';
 import { Options } from 'nodemailer/lib/smtp-transport';
 import { SesTransportDto } from '@designli/messaging-providers/sender/dto/adapters/ses-transport.dto';
 import { validateInput } from '@designli/messaging-providers/commons/validator';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SesEmailAdapter extends NodemailerAdapter<SendEmailMessageDto> {
+  private readonly logger: Logger;
+
   constructor(transporterOptions: SesTransportDto) {
-    validateInput(transporterOptions, SesTransportDto);
     super({
       host: transporterOptions.awsHost,
       port: transporterOptions.awsPort,
@@ -19,10 +20,19 @@ export class SesEmailAdapter extends NodemailerAdapter<SendEmailMessageDto> {
       },
       debug: transporterOptions.debug ?? false,
     });
+
+    this.logger = new Logger(SesEmailAdapter.name);
+
+    validateInput(transporterOptions, SesTransportDto);
   }
 
   getMailOptions(message: SendEmailMessageDto): Options {
-    validateInput(message, SendEmailMessageDto);
+    try {
+      validateInput(message, SendEmailMessageDto);
+    } catch (error) {
+      this.logger.error(`Validation failed for SendEmailMessageDto: ${error}`);
+      throw error;
+    }
 
     const options: Options = {
       from: message.sender,
@@ -35,6 +45,7 @@ export class SesEmailAdapter extends NodemailerAdapter<SendEmailMessageDto> {
     if (message.bcc) options.bcc = message.bcc;
     if (message.type === 'text') options.text = message.message;
     if (message.type === 'html') options.html = message.message;
+    if (message.headers) options.headers = message.headers;
 
     return options;
   }
